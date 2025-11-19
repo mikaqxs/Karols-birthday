@@ -133,3 +133,158 @@
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feliz Aniversário, Karols!</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(120deg, #ffe6f0, #ffd1e8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  h1, h2, h3 {
+    color: #ff2d95;
+    text-shadow: 2px 2px #fff;
+    margin: 10px 0;
+  }
+
+  h1 { font-size: 2.5em; animation: pulse 1s infinite; }
+  h2 { font-size: 2em; animation: pulse 1.2s infinite; }
+  h3 { font-size: 1.8em; animation: pulse 1.4s infinite; }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  #countdown {
+    font-size: 1.5em;
+    color: #ff2d95;
+    margin: 20px 0;
+  }
+
+  .hearts {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .heart {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #ff2d95;
+    transform: rotate(-45deg);
+    top: 50%;
+    left: 50%;
+    animation: floatUp linear infinite;
+  }
+
+  .heart::before,
+  .heart::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #ff2d95;
+    border-radius: 50%;
+  }
+
+  .heart::before { top: -10px; left: 0; }
+  .heart::after { top: 0; left: 10px; }
+
+  @keyframes floatUp {
+    0% { transform: translate(0, 0) rotate(-45deg); opacity: 1; }
+    100% { transform: translate(calc(-50px + 100px * var(--randX)), -700px) rotate(-45deg); opacity: 0; }
+  }
+
+  #musicButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #ff2d95;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  audio { display: none; }
+
+</style>
+</head>
+<body>
+
+<h1>Karols, fiquei horas fazendo isso pra você 😍</h1>
+<h2>Você é especial 💖</h2>
+<h3>Amo você, feliz aniversário 🎉</h3>
+
+<div id="countdown"></div>
+<div class="hearts"></div>
+
+<audio id="music" autoplay loop>
+  <source src="aniversario.mp3" type="audio/mpeg">
+</audio>
+<button id="musicButton" onclick="toggleMusic()">🎵 Pausar/Reproduzir Música</button>
+
+<script>
+  const heartsContainer = document.querySelector('.hearts');
+
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.setProperty('--randX', Math.random());
+    heart.style.animationDuration = (3 + Math.random() * 2) + 's';
+    heart.style.width = heart.style.height = (10 + Math.random() * 20) + 'px';
+    heartsContainer.appendChild(heart);
+    setTimeout(() => heart.remove(), 5000);
+  }
+
+  setInterval(createHeart, 300);
+
+  // Contagem regressiva
+  const countdownEl = document.getElementById('countdown');
+  const birthday = new Date("2025-12-25T00:00:00"); // Troque para a data real
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = birthday - now;
+    if (diff <= 0) {
+      countdownEl.innerHTML = "🎂 É HOJE O ANIVERSÁRIO! 🎂";
+    } else {
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+      countdownEl.innerHTML = `Faltam ${days} dias ${hours}h ${minutes}m ${seconds}s para o aniversário!`;
+    }
+  }
+
+  setInterval(updateCountdown, 1000);
+  updateCountdown();
+
+  // Botão para pausar/reproduzir música
+  const music = document.getElementById('music');
+  function toggleMusic() {
+    if (music.paused) music.play();
+    else music.pause();
+  }
+</script>
+
+</body>
+</html>
