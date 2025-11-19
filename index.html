@@ -5,62 +5,55 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Feliz Aniversário, Karols!</title>
 <style>
-  body {
-    margin:0; padding:0;
-    font-family:'Arial',sans-serif;
-    background-color:#000;
-    display:flex; flex-direction:column;
-    justify-content:center; align-items:center;
-    min-height:100vh; text-align:center;
-    overflow-x:hidden;
-    color:#9b59b6; /* letras roxas */
-  }
+body {
+  margin:0; padding:0;
+  font-family:'Arial',sans-serif;
+  background-color:#000;
+  color:#9b59b6;
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+h1,h2,h3 {
+  margin:10px 15px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width:95vw;
+}
+h1{ font-size:2em; }
+h2{ font-size:1.4em; }
+h3{ font-size:1.1em; line-height:1.4em; margin-top:20px; }
 
-  h1,h2,h3 {
-    margin:10px 15px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    max-width:95vw;
-    color:#9b59b6;
-  }
+#countdown{font-size:1.2em;margin:15px 0;}
+.messageButton{
+  margin-top:15px; padding:10px 20px; font-size:1em;
+  background-color:#9b59b6; color:white; border:none; border-radius:8px;
+  cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);
+}
+#birthdayButton{display:none;}
 
-  h1{ font-size:2em; }
-  h2{ font-size:1.4em; }
-  h3{ font-size:1.1em; line-height:1.4em; margin-top:20px; }
+.hearts{position:absolute;width:100%;height:100%;pointer-events:none;overflow:hidden;}
+.heart{
+  position:absolute;width:20px;height:20px;background:#9b59b6;transform:rotate(-45deg);
+  border-radius:5px; opacity:0.8; animation:floatUp linear infinite;
+}
+.heart::before,.heart::after{content:"";position:absolute;width:20px;height:20px;background:#9b59b6;border-radius:50%;}
+.heart::before{top:-10px;left:0;}
+.heart::after{top:0;left:10px;}
+@keyframes floatUp{
+  0%{transform:translate(0,0) rotate(-45deg);opacity:0.8;}
+  100%{transform:translate(calc(-50px + 100px*var(--randX)),-700px) rotate(-45deg);opacity:0;}
+}
 
-  #countdown {
-    font-size:1.2em; color:#9b59b6; margin:15px 0;
-  }
-
-  .hearts {position:absolute; width:100%; height:100%; pointer-events:none; overflow:hidden;}
-  .heart {position:absolute; width:20px; height:20px; background:#9b59b6; transform:rotate(-45deg); animation:floatUp linear infinite;}
-  .heart::before,.heart::after {content:""; position:absolute; width:20px; height:20px; background:#9b59b6; border-radius:50%;}
-  .heart::before{top:-10px; left:0;} .heart::after{top:0; left:10px;}
-  @keyframes floatUp {0%{transform:translate(0,0) rotate(-45deg); opacity:1;}100%{transform:translate(calc(-50px + 100px*var(--randX)),-700px) rotate(-45deg);opacity:0;}}
-
-  .messageButton {
-    margin-top:15px; padding:10px 20px; font-size:1em;
-    background-color:#9b59b6; color:white; border:none; border-radius:8px;
-    cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);
-  }
-
-  #birthdayButton { display:none; }
-
-  canvas {margin-top:20px;}
-
-  @media (max-width: 400px){
-    h1{font-size:1.6em;}
-    h2{font-size:1.1em;}
-    h3{font-size:1em;}
-    .messageButton{padding:8px 15px; font-size:0.9em;}
-  }
-
-  /* animação de piscar */
-  @keyframes blink {
-    0%, 50%, 100% {opacity:1;}
-    25%, 75% {opacity:0.3;}
-  }
-  .blinking {animation: blink 1s infinite;}
+canvas{display:block;margin-top:20px;}
+.blinking{animation:blink 1s infinite;}
+@keyframes blink{0%,50%,100%{opacity:1;}25%,75%{opacity:0.3;}}
+@media(max-width:400px){
+  h1{font-size:1.6em;}
+  h2{font-size:1.1em;}
+  h3{font-size:1em;}
+  .messageButton{padding:8px 15px;font-size:0.9em;}
+}
 </style>
 </head>
 <body>
@@ -80,47 +73,39 @@
 <canvas id="heartCanvas" width="300" height="300" style="display:none;"></canvas>
 
 <script>
-window.onload = function() {
-  // Corações animados
-  const heartsContainer = document.querySelector('.hearts');
+window.onload=function(){
+  const heartsContainer=document.querySelector('.hearts');
   function createHeart(){
-    const heart = document.createElement('div');
+    const heart=document.createElement('div');
     heart.classList.add('heart');
-    heart.style.left = Math.random()*100+'vw';
+    heart.style.left=Math.random()*100+'vw';
     heart.style.setProperty('--randX',Math.random());
     heart.style.animationDuration=(3+Math.random()*2)+'s';
-    const size = 10 + Math.random()*15;
-    heart.style.width = heart.style.height = size + 'px';
+    const size=10+Math.random()*15;
+    heart.style.width=heart.style.height=size+'px';
     heartsContainer.appendChild(heart);
     setTimeout(()=>heart.remove(),5000);
   }
   setInterval(createHeart,300);
 
-  // Contagem regressiva para 29 de novembro de 2025
-  const countdownEl = document.getElementById('countdown');
-  const birthday = new Date();
-  birthday.setFullYear(2025, 10, 29);
-  birthday.setHours(23,59,59,999);
-
+  const countdownEl=document.getElementById('countdown');
+  const birthday=new Date(); birthday.setFullYear(2025,10,29); birthday.setHours(23,59,59,999);
   function updateCountdown(){
-    const now = new Date();
-    const diff = birthday - now;
-    if(diff <= 0){
-      countdownEl.innerHTML = "🎂 É HOJE O ANIVERSÁRIO! 🎂";
-      document.getElementById('messageClick').style.display = 'block';
-    } else {
-      const days = Math.floor(diff / (1000*60*60*24));
-      const hours = Math.floor((diff/(1000*60*60))%24);
-      const minutes = Math.floor((diff/(1000*60))%60);
-      const seconds = Math.floor((diff/1000)%60);
-      countdownEl.innerHTML = `Faltam ${days} dias ${hours}h ${minutes}m ${seconds}s para o aniversário!`;
+    const now=new Date(); const diff=birthday-now;
+    if(diff<=0){
+      countdownEl.innerHTML="🎂 É HOJE O ANIVERSÁRIO! 🎂";
+      document.getElementById('messageClick').style.display='block';
+    }else{
+      const days=Math.floor(diff/(1000*60*60*24));
+      const hours=Math.floor((diff/(1000*60*60))%24);
+      const minutes=Math.floor((diff/(1000*60))%60);
+      const seconds=Math.floor((diff/1000)%60);
+      countdownEl.innerHTML=`Faltam ${days} dias ${hours}h ${minutes}m ${seconds}s para o aniversário!`;
     }
   }
-  setInterval(updateCountdown,1000);
-  updateCountdown();
+  setInterval(updateCountdown,1000); updateCountdown();
 
-  // Sequência de mensagens curtas
-  const messages = [
+  const messages=[
     "Karols, hoje é seu dia! 🥳🎉",
     "Espero que goste do que fiz pra voce!🤟🏼",
     "É simples mas fiz de coração! 😝",
@@ -129,60 +114,44 @@ window.onload = function() {
     "Feliz aniversário Karolayne Porto Romao! 🎉🎉"
   ];
 
-  let index = 0;
-  const messageDisplay = document.getElementById('messageDisplay');
-  const messageClick = document.getElementById('messageClick');
-  const birthdayButton = document.getElementById('birthdayButton');
-  const birthdayMessage = document.getElementById('birthdayMessage');
-  const canvas = document.getElementById('heartCanvas');
-  const ctx = canvas.getContext('2d');
+  let index=0;
+  const messageDisplay=document.getElementById('messageDisplay');
+  const messageClick=document.getElementById('messageClick');
+  const birthdayButton=document.getElementById('birthdayButton');
+  const birthdayMessage=document.getElementById('birthdayMessage');
+  const canvas=document.getElementById('heartCanvas');
+  const ctx=canvas.getContext('2d');
 
-  messageClick.onclick = function() {
-    if(index < messages.length){
-      messageDisplay.innerHTML = messages[index];
-      index++;
-    } 
-    if(index === messages.length){
-      birthdayButton.style.display = 'block';
-      messageClick.style.display = 'none';
-    }
+  messageClick.onclick=function(){
+    if(index<messages.length){messageDisplay.innerHTML=messages[index]; index++;}
+    if(index===messages.length){birthdayButton.style.display='block'; messageClick.style.display='none';}
   }
 
-  // Função para desenhar o coração
-  function drawHeart() {
-    canvas.style.display = 'block';
+  function drawHeart(){
+    canvas.style.display='block';
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle = "#9b59b6";
+    ctx.fillStyle="#9b59b6";
     ctx.beginPath();
-    ctx.moveTo(150, 130);
-    ctx.bezierCurveTo(150, 90, 70, 90, 70, 150);
-    ctx.bezierCurveTo(70, 210, 150, 250, 150, 280);
-    ctx.bezierCurveTo(150, 250, 230, 210, 230, 150);
-    ctx.bezierCurveTo(230, 90, 150, 90, 150, 130);
+    ctx.moveTo(150,130);
+    ctx.bezierCurveTo(150,90,70,90,70,150);
+    ctx.bezierCurveTo(70,210,150,250,150,280);
+    ctx.bezierCurveTo(150,250,230,210,230,150);
+    ctx.bezierCurveTo(230,90,150,90,150,130);
     ctx.fill();
-
-    // Texto dentro do coração
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 24px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("Karols", 150, 160);
-
-    // Pisca efeito
+    ctx.fillStyle="#fff"; ctx.font="bold 24px Arial";
+    ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText("Karols",150,160);
     canvas.classList.add('blinking');
   }
 
-  birthdayButton.onclick = function() {
-    birthdayMessage.style.display = 'block';
-    birthdayMessage.innerHTML = `Não sei por onde começar mas saiba que você é importante pra mim. 
+  birthdayButton.onclick=function(){
+    birthdayMessage.style.display='block';
+    birthdayMessage.innerHTML=`Não sei por onde começar mas saiba que você é importante pra mim. 
 Sua amizade trouxe cor pra minha vida, adoro ter vc por perto. Vou aproveitar que hoje é seu aniversário e te desejar tudo de bom e colocar aquelas frases clichês de texto de aniversário que é “feliz aniversário karols, que essa data se repita por muitos anos! 
 Você eh tudo de bom!!! Te desejo muitas coisas boas que essa vida tem a oferecer e que um dia vc se case com o Namjoon do BTS 🤣🤣🎉🥳💜✨`;
 
-    // Desenha coração logo após
-    setTimeout(drawHeart, 500);
+    setTimeout(drawHeart,500);
   }
 };
 </script>
-
 </body>
 </html>
