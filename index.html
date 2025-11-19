@@ -15,14 +15,12 @@ html, body {
   overflow:hidden;
   text-align:center;
 }
-
 h1,h3{
   margin:10px auto;
   max-width:90vw;
   line-height:1.4em;
   font-size:clamp(16px,4vw,24px);
 }
-
 .messageButton{
   margin:15px auto; padding:12px 25px;
   font-size:clamp(14px,4vw,20px);
@@ -33,7 +31,6 @@ h1,h3{
   cursor:pointer;
   box-shadow:2px 2px 8px rgba(0,0,0,0.3);
 }
-
 canvas { display:block; width:100vw; height:100vh; }
 
 .star, .heart {
@@ -46,7 +43,6 @@ canvas { display:block; width:100vw; height:100vh; }
 .heart { width:12px; height:12px; background:#9b59b6; transform: rotate(-45deg); }
 .heart::before, .heart::after { content:""; position:absolute; width:12px;height:12px; background:#9b59b6; border-radius:50%; }
 .heart::before{top:-6px; left:0;} .heart::after{top:0; left:6px;}
-
 @keyframes float {0%{transform:translateY(0);}50%{transform:translateY(-10px);}100%{transform:translateY(0);}}
 @keyframes blink {0%,50%,100%{opacity:0.8;}25%,75%{opacity:0.3;}}
 </style>
@@ -56,16 +52,13 @@ canvas { display:block; width:100vw; height:100vh; }
 <h1>Karols, passei horas fazendo isso pra você. Espero que goste!! 💜✨🥳</h1>
 <div id="countdown"></div>
 
-<!-- Primeira etapa: mensagens curtas -->
 <button id="messageClick" class="messageButton">Clique aqui para ver a mensagem!</button>
 <h3 id="messageDisplay"></h3>
 
-<!-- Segunda etapa: texto longo -->
 <button id="birthdayButton" class="messageButton" style="display:none;">Clique para ver a mensagem final!</button>
 <h3 id="birthdayMessage" style="display:none;"></h3>
 
-<!-- Terceira etapa: coração animado -->
-<button id="heartButton" class="messageButton" style="display:none;">Clique para ver a surpresa final!</button>
+<button id="heartButton" class="messageButton" style="display:none;">Clique para a surpresa final!</button>
 <canvas id="canvas" aria-label="Coração animado com texto 'Feliz aniversário, Karols!'" style="display:none;"></canvas>
 
 <script>
@@ -85,7 +78,7 @@ function createParticles(num, type) {
 createParticles(40,'star');
 createParticles(20,'heart');
 
-// ======== Contador para desbloquear botão ========
+// ======== Contador ========
 const countdownEl=document.getElementById('countdown');
 const birthday=new Date(); birthday.setFullYear(2025,10,29); birthday.setHours(0,0,0,0);
 function updateCountdown(){
@@ -133,7 +126,7 @@ birthdayButton.onclick=function(){
   birthdayButton.style.display='none';
 }
 
-// ======== Canvas coração ========
+// ======== Canvas coração final ========
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -188,12 +181,13 @@ function drawHeart(now){
 
   requestAnimationFrame(drawHeart);
 }
-requestAnimationFrame(drawHeart);
 
+// ======== Botão da surpresa final ========
 heartButton.onclick=function(){
   canvas.style.display='block';
   showCanvas=true;
   heartButton.style.display='none';
+  requestAnimationFrame(drawHeart); // garante que o coração seja desenhado
 }
 </script>
 </body>
