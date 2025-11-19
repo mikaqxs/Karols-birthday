@@ -155,16 +155,17 @@ function drawHeart(now){
   const h = window.innerHeight;
   ctx.clearRect(0,0,w,h);
 
-  const scale = Math.min(w,h)/32; // coração grande
+  // ESCALA máxima para preencher a tela inteira
+  const scale = Math.min(w,h)/25; // maior coração
   const cx = w/2;
-  const cy = h/2; // centralizado verticalmente
+  const cy = h/2;
 
   const time = now/1000;
   const rotate = Math.sin(time*0.7)*0.05;
   const offsetRadius = Math.sin(time*1.2)*2;
 
   ctx.save();
-  ctx.translate(cx, cy);
+  ctx.translate(cx,cy);
   ctx.rotate(rotate);
 
   for(let i=0;i<pts.length;i++){
@@ -180,7 +181,8 @@ function drawHeart(now){
     ctx.translate(nx,ny);
     ctx.rotate(angle);
 
-    const fontSize = Math.max(14, Math.min(32, Math.floor(Math.min(w,h)*0.03)));
+    // fonte adaptável
+    const fontSize = Math.max(16, Math.min(40, Math.floor(Math.min(w,h)*0.035)));
     ctx.font = `bold ${fontSize}px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial`;
     ctx.fillStyle = '#ff98c2';
     ctx.shadowColor = 'rgba(255,200,240,0.9)';
