@@ -24,7 +24,7 @@
 
   h1 { font-size:2.2em; animation:pulse 1s infinite; }
   h2 { font-size:1.6em; animation:pulse 1.2s infinite; }
-  h3 { font-size:2em; margin-top:20px; }
+  h3 { font-size:1.2em; margin-top:20px; }
 
   @keyframes pulse {0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
 
@@ -38,11 +38,14 @@
   .heart::before{top:-10px; left:0;} .heart::after{top:0; left:10px;}
   @keyframes floatUp {0%{transform:translate(0,0) rotate(-45deg); opacity:1;}100%{transform:translate(calc(-50px + 100px*var(--randX)),-700px) rotate(-45deg);opacity:0;}}
 
-  #birthdayButton {
+  .messageButton {
     margin-top:15px; padding:12px 25px; font-size:1em;
     background-color:#ff2d95; color:white; border:none; border-radius:8px;
-    cursor:pointer;
-    box-shadow:2px 2px 6px rgba(0,0,0,0.2);
+    cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.2);
+  }
+
+  #birthdayButton {
+    display:none;
   }
 </style>
 </head>
@@ -54,7 +57,10 @@
 <div id="countdown"></div>
 <div class="hearts"></div>
 
-<button id="birthdayButton">Clique aqui para a surpresa!</button>
+<button id="messageClick" class="messageButton">Clique aqui para ver a mensagem!</button>
+<h3 id="messageDisplay"></h3>
+
+<button id="birthdayButton" class="messageButton">Clique aqui para a surpresa final!</button>
 <h3 id="birthdayMessage" style="display:none;"></h3>
 
 <script>
@@ -85,6 +91,7 @@ window.onload = function() {
     const diff = birthday - now;
     if(diff <= 0){
       countdownEl.innerHTML = "🎂 É HOJE O ANIVERSÁRIO! 🎂";
+      document.getElementById('messageClick').style.display = 'block'; // só aparece no dia
     } else {
       const days = Math.floor(diff / (1000*60*60*24));
       const hours = Math.floor((diff/(1000*60*60))%24);
@@ -96,15 +103,45 @@ window.onload = function() {
   setInterval(updateCountdown,1000);
   updateCountdown();
 
-  // Botão surpresa
-  const button = document.getElementById('birthdayButton');
-  const message = document.getElementById('birthdayMessage');
-  button.onclick = function() {
-    message.style.display = 'block';
-    message.innerHTML = "🎉 FELIZ ANIVERSÁRIO KAROLS, I PURPLE you!!! 💜🥳🎉✨";
-    // opcional: animação pulse na mensagem
-    message.style.animation = "pulse 1s infinite";
+  // Sequência de mensagens curtas
+  const messages = [
+    "💜✨ Um pouquinho do que eu gosto de fazer!",
+    "🥳🎉 Hoje é seu dia especial!",
+    "🎈 Espero que você solte um sorriso enquanto vê isso!",
+    "😊 Seguindo meus cálculos de programação...",
+    "💡 Ainda estou começando, mas fiz com carinho!",
+    "🎊 E agora vem a surpresa final!"
+  ];
+
+  let index = 0;
+  const messageDisplay = document.getElementById('messageDisplay');
+  const messageClick = document.getElementById('messageClick');
+  const birthdayButton = document.getElementById('birthdayButton');
+  const birthdayMessage = document.getElementById('birthdayMessage');
+
+  messageClick.onclick = function() {
+    if(index < messages.length){
+      messageDisplay.innerHTML = messages[index];
+      index++;
+    } 
+    if(index === messages.length){
+      // mostra botão final
+      birthdayButton.style.display = 'block';
+      messageClick.style.display = 'none';
+    }
   }
+
+  // Botão surpresa final
+  birthdayButton.onclick = function() {
+    birthdayMessage.style.display = 'block';
+    birthdayMessage.innerHTML = `karols, isso ta mt basico mas queria fazer algo que eu pudesse mostrar um pouco do que eu realmente gosto de fazer!! 
+hoje é seu dia e queria que você soltasse um sorriso enquanto ve essa mensagem acho que o botao vai aparecer assim q der 00:00 do dia 29! que é seu aniversário 🎈 
+entao se vc ta vendo essa mensagem eh pq funciona segundo meus cálculos de programação ainda to começando mas enfim!! 
+feliz aniversário e muitos anos de vida viu!! vc eh a pessoa mais incrível na face da terra! adoro sua companhia vc eh especial pra mim <3 obg por ser minha amg! 
+te desejo tudo de bom nessa e vida e muito mais!! aproveita bastante seu dia viu! amo voce💜✨`;
+    birthdayMessage.style.animation = "pulse 1s infinite";
+  }
+
 };
 </script>
 
