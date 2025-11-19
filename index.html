@@ -12,24 +12,26 @@
     display:flex; flex-direction:column;
     justify-content:center; align-items:center;
     min-height:100vh; text-align:center;
-    overflow:hidden;
+    overflow-x:hidden;
   }
 
   h1,h2,h3 {
     color:#ff2d95;
     text-shadow:2px 2px #fff;
-    margin:10px 20px;
+    margin:10px 15px;
     word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width:95vw;
   }
 
-  h1 { font-size:2.2em; animation:pulse 1s infinite; }
-  h2 { font-size:1.6em; animation:pulse 1.2s infinite; }
-  h3 { font-size:1.2em; margin-top:20px; }
+  h1 { font-size:2em; animation:pulse 1s infinite; }
+  h2 { font-size:1.4em; animation:pulse 1.2s infinite; }
+  h3 { font-size:1.1em; margin-top:20px; line-height:1.4em; }
 
   @keyframes pulse {0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
 
   #countdown {
-    font-size:1.4em; color:#ff2d95; margin:15px 0;
+    font-size:1.2em; color:#ff2d95; margin:15px 0;
   }
 
   .hearts {position:absolute; width:100%; height:100%; pointer-events:none; overflow:hidden;}
@@ -39,12 +41,19 @@
   @keyframes floatUp {0%{transform:translate(0,0) rotate(-45deg); opacity:1;}100%{transform:translate(calc(-50px + 100px*var(--randX)),-700px) rotate(-45deg);opacity:0;}}
 
   .messageButton {
-    margin-top:15px; padding:12px 25px; font-size:1em;
+    margin-top:15px; padding:10px 20px; font-size:1em;
     background-color:#ff2d95; color:white; border:none; border-radius:8px;
     cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.2);
   }
 
   #birthdayButton { display:none; }
+
+  @media (max-width: 400px){
+    h1{font-size:1.6em;}
+    h2{font-size:1.1em;}
+    h3{font-size:1em;}
+    .messageButton{padding:8px 15px; font-size:0.9em;}
+  }
 </style>
 </head>
 <body>
@@ -123,13 +132,11 @@ window.onload = function() {
       index++;
     } 
     if(index === messages.length){
-      // mostra botão final
       birthdayButton.style.display = 'block';
       messageClick.style.display = 'none';
     }
   }
 
-  // Botão surpresa final
   birthdayButton.onclick = function() {
     birthdayMessage.style.display = 'block';
     birthdayMessage.innerHTML = `Não sei por onde começar mas saiba que você é importante pra mim. 
@@ -137,7 +144,6 @@ Sua amizade trouxe cor pra minha vida, adoro ter vc por perto. Vou aproveitar qu
 Você eh tudo de bom!!! Te desejo muitas coisas boas que essa vida tem a oferecer e que um dia vc se case com o Namjoon do BTS 🤣🤣🎉🥳💜✨`;
     birthdayMessage.style.animation = "pulse 1s infinite";
   }
-
 };
 </script>
 
