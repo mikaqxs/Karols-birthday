@@ -1,42 +1,54 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Feliz aniversário, Karols!</title>
 <style>
 html, body {
-  height: 100%;
-  margin: 0;
-  background: #000;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  color: #9b59b6;
-  overflow: hidden;
-  text-align: center;
+  margin:0;
+  padding:0;
+  height:100%;
+  background:#000;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  color:#9b59b6;
+  overflow:hidden;
+  text-align:center;
 }
-canvas { display: block; width:100vw; height:100vh; }
+
+h1,h3{
+  margin:10px auto;
+  max-width:90vw;
+  line-height:1.4em;
+  font-size:clamp(16px,4vw,24px);
+}
 
 .messageButton{
-  margin-top:15px; padding:10px 20px; font-size:1em;
-  background-color:#9b59b6; color:white; border:none; border-radius:8px;
-  cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);
+  margin:15px auto; padding:12px 25px;
+  font-size:clamp(14px,4vw,20px);
+  background-color:#9b59b6;
+  color:white;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  box-shadow:2px 2px 8px rgba(0,0,0,0.3);
 }
-#birthdayButton{display:none;}
-h3{margin:15px; max-width:90vw; line-height:1.4em;}
 
-/* Partículas do fundo */
+canvas { display:block; width:100vw; height:100vh; }
+
 .star, .heart {
-  position: absolute;
-  opacity: 0.8;
+  position:absolute;
+  opacity:0.8;
   animation: float linear infinite, blink 2s infinite;
+  pointer-events:none;
 }
-.star { width: 4px; height: 4px; background: #9b59b6; border-radius: 50%; }
-.heart { width: 12px; height: 12px; background: #9b59b6; transform: rotate(-45deg); }
+.star { width:4px; height:4px; background:#9b59b6; border-radius:50%; }
+.heart { width:12px; height:12px; background:#9b59b6; transform: rotate(-45deg); }
 .heart::before, .heart::after { content:""; position:absolute; width:12px;height:12px; background:#9b59b6; border-radius:50%; }
 .heart::before{top:-6px; left:0;} .heart::after{top:0; left:6px;}
-@keyframes float { 0%{transform:translateY(0);}50%{transform:translateY(-10px);}100%{transform:translateY(0);} }
-@keyframes blink {0%,50%,100%{opacity:0.8;}25%,75%{opacity:0.3;}}
 
+@keyframes float {0%{transform:translateY(0);}50%{transform:translateY(-10px);}100%{transform:translateY(0);}}
+@keyframes blink {0%,50%,100%{opacity:0.8;}25%,75%{opacity:0.3;}}
 </style>
 </head>
 <body>
@@ -44,13 +56,17 @@ h3{margin:15px; max-width:90vw; line-height:1.4em;}
 <h1>Karols, passei horas fazendo isso pra você. Espero que goste!! 💜✨🥳</h1>
 <div id="countdown"></div>
 
+<!-- Primeira etapa: mensagens curtas -->
 <button id="messageClick" class="messageButton">Clique aqui para ver a mensagem!</button>
 <h3 id="messageDisplay"></h3>
 
-<button id="birthdayButton" class="messageButton">Clique aqui para a surpresa final!</button>
+<!-- Segunda etapa: texto longo -->
+<button id="birthdayButton" class="messageButton" style="display:none;">Clique para ver a mensagem final!</button>
 <h3 id="birthdayMessage" style="display:none;"></h3>
 
-<canvas id="canvas" aria-label="Coração animado com texto 'Feliz aniversário, Karols!'"></canvas>
+<!-- Terceira etapa: coração animado -->
+<button id="heartButton" class="messageButton" style="display:none;">Clique para ver a surpresa final!</button>
+<canvas id="canvas" aria-label="Coração animado com texto 'Feliz aniversário, Karols!'" style="display:none;"></canvas>
 
 <script>
 // ======== Partículas de fundo ========
@@ -60,7 +76,7 @@ function createParticles(num, type) {
     el.className = type;
     el.style.left = Math.random()*100 + 'vw';
     el.style.top = Math.random()*100 + 'vh';
-    const size = (type==='heart') ? 8 + Math.random()*8 : 2 + Math.random()*3;
+    const size = (type==='heart') ? 8 + Math.random()*6 : 2 + Math.random()*2;
     el.style.width = el.style.height = size + 'px';
     el.style.animationDuration = 2 + Math.random()*3 + 's';
     document.body.appendChild(el);
@@ -85,7 +101,7 @@ function updateCountdown(){
 }
 setInterval(updateCountdown,1000); updateCountdown();
 
-// ======== Mensagens interativas ========
+// ======== Mensagens curtas ========
 const messages=[
   "Karols, hoje é seu dia! 🥳🎉",
   "Espero que goste do que fiz pra voce!🤟🏼",
@@ -99,13 +115,25 @@ const messageDisplay=document.getElementById('messageDisplay');
 const messageClick=document.getElementById('messageClick');
 const birthdayButton=document.getElementById('birthdayButton');
 const birthdayMessage=document.getElementById('birthdayMessage');
+const heartButton=document.getElementById('heartButton');
 
 messageClick.onclick=function(){
   if(index<messages.length){messageDisplay.innerHTML=messages[index]; index++;}
   if(index===messages.length){birthdayButton.style.display='block'; messageClick.style.display='none';}
 }
 
-// ======== Canvas com coração final ========
+// ======== Texto longo ========
+const finalText = "Não sei por onde começar mas saiba que você é importante pra mim. Sua amizade trouxe cor pra minha vida, adoro ter vc por perto. Vou aproveitar que hoje é seu aniversário e te desejar tudo de bom e colocar aquelas frases clichês de texto de aniversário que é “feliz aniversário karols, que essa data se repita por muitos anos! Você eh tudo de bom!!! Te desejo muitas coisas boas que essa vida tem a oferecer e que um dia vc se case com o Namjoon do BTS 🤣🤣🎉🥳💜✨";
+
+birthdayButton.onclick=function(){
+  birthdayMessage.style.display='block';
+  birthdayMessage.style.fontSize = "clamp(14px,4vw,18px)";
+  birthdayMessage.innerHTML = finalText;
+  heartButton.style.display='block';
+  birthdayButton.style.display='none';
+}
+
+// ======== Canvas coração ========
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -120,13 +148,15 @@ function resize() {
 window.addEventListener('resize', resize, {passive:true});
 resize();
 
-const text = "Não sei por onde começar mas saiba que você é importante pra mim. Sua amizade trouxe cor pra minha vida, adoro ter vc por perto. Vou aproveitar que hoje é seu aniversário e te desejar tudo de bom e colocar aquelas frases clichês de texto de aniversário que é “feliz aniversário karols, que essa data se repita por muitos anos! Você eh tudo de bom!!! Te desejo muitas coisas boas que essa vida tem a oferecer e que um dia vc se case com o Namjoon do BTS 🤣🤣🎉🥳💜✨";
 const POINTS = 200;
 const pts = [];
 function heart(t){ const x = 16*Math.pow(Math.sin(t),3); const y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t)); return [x,y]; }
 for(let i=0;i<POINTS;i++){ const t=(i/POINTS)*Math.PI*2; const [x,y]=heart(t); pts.push({x,y,t}); }
 
+let showCanvas=false;
+
 function drawHeart(now){
+  if(!showCanvas) return;
   const w = window.innerWidth, h = window.innerHeight;
   ctx.clearRect(0,0,w,h);
   const scale = Math.min(w,h)/50; const cx=w/2, cy=h/2.2;
@@ -139,26 +169,31 @@ function drawHeart(now){
     const nx=px+(p.x/Math.hypot(p.x,p.y))*offsetRadius; const ny=py+(p.y/Math.hypot(p.x,p.y))*offsetRadius;
     const angle=Math.atan2(ny,nx)+Math.PI/2+Math.sin(time+i*0.02)*0.15;
     ctx.save(); ctx.translate(nx,ny); ctx.rotate(angle);
-    const fontSize = Math.max(10, Math.min(20, Math.floor(Math.min(w,h)*0.018)));
+    const fontSize = Math.max(12, Math.min(28, Math.floor(Math.min(w,h)*0.022)));
     ctx.font = `bold ${fontSize}px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial`;
     ctx.fillStyle = '#ff98c2';
     ctx.shadowColor='rgba(255,200,240,0.9)'; ctx.shadowBlur=8;
-    const ch = text[i % text.length]; ctx.textBaseline='middle';
+    const ch = "Feliz aniversário, Karols! "[i % "Feliz aniversário, Karols! ".length];
+    ctx.textBaseline='middle';
     ctx.fillText(ch,0,0); ctx.restore();
   }
   ctx.restore();
+
   const innerR = Math.min(w,h)*0.14;
   ctx.save(); ctx.globalCompositeOperation='destination-out';
   ctx.beginPath(); ctx.arc(cx,cy,innerR,0,Math.PI*2); ctx.fill(); ctx.restore();
+
   ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,innerR+2,0,Math.PI*2);
   ctx.strokeStyle='rgba(255,150,200,0.06)'; ctx.lineWidth=Math.min(w,h)*0.02; ctx.stroke(); ctx.restore();
+
   requestAnimationFrame(drawHeart);
 }
+requestAnimationFrame(drawHeart);
 
-birthdayButton.onclick=function(){
-  birthdayMessage.style.display='block';
-  birthdayMessage.innerHTML = text;
-  requestAnimationFrame(drawHeart);
+heartButton.onclick=function(){
+  canvas.style.display='block';
+  showCanvas=true;
+  heartButton.style.display='none';
 }
 </script>
 </body>
