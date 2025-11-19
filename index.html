@@ -1,138 +1,3 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Feliz aniversário, Karols!</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <canvas id="canvas" aria-label="Coração animado com texto 'Feliz aniversário, Karols!'"></canvas>
-
-  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-
-    function resize() {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.floor(window.innerWidth * dpr);
-      canvas.height = Math.floor(window.innerHeight * dpr);
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    window.addEventListener('resize', resize, { passive: true });
-    resize();
-
-    // Texto que vai formar o contorno
-    const text = 'Feliz aniversário, Karols! ';
-    // quantidade de pontos ao longo do contorno (aumente para mais densidade)
-    const POINTS = 200;
-    const pts = [];
-
-    // função matemática do coração (param t de 0 a 2π)
-    function heart(t) {
-      const x = 16 * Math.pow(Math.sin(t), 3);
-      const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
-      return [x, y];
-    }
-
-    // geramos os pontos normalizados uma vez (serão escalados depois)
-    function generatePoints() {
-      pts.length = 0;
-      for (let i = 0; i < POINTS; i++) {
-        const t = (i / POINTS) * Math.PI * 2;
-        const [x, y] = heart(t);
-        pts.push({ x, y, t });
-      }
-    }
-    generatePoints();
-
-    // animação
-    let last = 0;
-    function draw(now) {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      // background
-      ctx.clearRect(0, 0, w, h);
-      // escala do coração dependendo da tela (usa min)
-      const scale = Math.min(w, h) / 50; // ajuste para tamanho
-      const cx = w / 2;
-      const cy = h / 2.2; // ligeiro deslocamento pra cima
-
-      // animação de pulso/rotação suave
-      const time = now / 1000;
-      const rotate = Math.sin(time * 0.7) * 0.08; // rotação sutil
-      const offsetRadius = Math.sin(time * 1.2) * 3; // leve pulso
-
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(rotate);
-
-      // desenho do texto em cada ponto
-      for (let i = 0; i < pts.length; i++) {
-        const p = pts[i];
-        // posição base
-        const px = p.x * scale;
-        const py = p.y * scale;
-
-        // ligeiro deslocamento radial para dar movimento
-        const nx = px + (p.x / Math.hypot(p.x, p.y)) * offsetRadius;
-        const ny = py + (p.y / Math.hypot(p.x, p.y)) * offsetRadius;
-
-        // ângulo de rotação do texto na borda
-        const angle = Math.atan2(ny, nx) + Math.PI / 2 + Math.sin(time + i * 0.02) * 0.15;
-
-        ctx.save();
-        ctx.translate(nx, ny);
-
-        // rotaciona o texto para seguir a curva
-        ctx.rotate(angle);
-
-        // escolha de cor, sombra e tamanho responsivo
-        const fontSize = Math.max(10, Math.min(20, Math.floor(Math.min(w, h) * 0.018)));
-        ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial`;
-        ctx.fillStyle = '#ff98c2';
-        ctx.textBaseline = 'middle';
-
-        // brilho externo: sombra suave
-        ctx.shadowColor = 'rgba(255,200,240,0.9)';
-        ctx.shadowBlur = 8;
-
-        // pick the character to draw
-        const ch = text[i % text.length];
-        ctx.fillText(ch, 0, 0);
-
-        ctx.restore();
-      }
-
-      ctx.restore();
-
-      // small inner dark circle to create hollow center like the reference
-      ctx.save();
-      ctx.globalCompositeOperation = 'destination-out';
-      ctx.beginPath();
-      const innerR = Math.min(w, h) * 0.14; // ajusta aqui o tamanho do "buraco"
-      ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-
-      // optional soft glow ring: draw translucent ring on top
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(cx, cy, innerR + 2, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255,150,200,0.06)';
-      ctx.lineWidth = Math.min(w, h) * 0.02;
-      ctx.stroke();
-      ctx.restore();
-
-      requestAnimationFrame(draw);
-    }
-
-    requestAnimationFrame(draw);
-  </script>
-</body>
-</html>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -153,137 +18,71 @@
     overflow: hidden;
     text-align: center;
   }
-
-  h1, h2, h3 {
+  h1, h2 {
     color: #ff2d95;
     text-shadow: 2px 2px #fff;
     margin: 10px 0;
   }
-
   h1 { font-size: 2.5em; animation: pulse 1s infinite; }
   h2 { font-size: 2em; animation: pulse 1.2s infinite; }
-  h3 { font-size: 1.8em; animation: pulse 1.4s infinite; }
-
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-  }
-
-  #countdown {
-    font-size: 1.5em;
-    color: #ff2d95;
-    margin: 20px 0;
-  }
-
-  .hearts {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    overflow: hidden;
-  }
-
-  .heart {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: #ff2d95;
-    transform: rotate(-45deg);
-    top: 50%;
-    left: 50%;
-    animation: floatUp linear infinite;
-  }
-
-  .heart::before,
-  .heart::after {
-    content: "";
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: #ff2d95;
-    border-radius: 50%;
-  }
-
-  .heart::before { top: -10px; left: 0; }
-  .heart::after { top: 0; left: 10px; }
-
-  @keyframes floatUp {
-    0% { transform: translate(0, 0) rotate(-45deg); opacity: 1; }
-    100% { transform: translate(calc(-50px + 100px * var(--randX)), -700px) rotate(-45deg); opacity: 0; }
-  }
-
-  #musicButton {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 1em;
-    background-color: #ff2d95;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  audio { display: none; }
-
+  @keyframes pulse {0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
+  #countdown {font-size:1.5em;color:#ff2d95;margin:20px 0;}
+  .hearts {position:absolute;width:100%;height:100%;pointer-events:none;overflow:hidden;}
+  .heart {position:absolute;width:20px;height:20px;background:#ff2d95;transform:rotate(-45deg);top:50%;left:50%;animation:floatUp linear infinite;}
+  .heart::before, .heart::after {content:"";position:absolute;width:20px;height:20px;background:#ff2d95;border-radius:50%;}
+  .heart::before {top:-10px; left:0;} .heart::after {top:0; left:10px;}
+  @keyframes floatUp {0%{transform:translate(0,0) rotate(-45deg);opacity:1;}100%{transform:translate(calc(-50px + 100px * var(--randX)),-700px) rotate(-45deg);opacity:0;}}
+  #musicButton {margin-top:20px;padding:10px 20px;font-size:1em;background-color:#ff2d95;color:white;border:none;border-radius:5px;cursor:pointer;}
+  audio {display:none;}
 </style>
 </head>
 <body>
 
-<h1>Karols, fiquei horas fazendo isso pra você 😍</h1>
-<h2>Você é especial 💖</h2>
-<h3>Amo você, feliz aniversário 🎉</h3>
+<h1>Karols, passei horas fazendo isso pra você. Espero que goste!! 💜✨🥳</h1>
+<h2>Você é especial pra mim! 💜 É simples mas é de coração!!! 🥳🎊🎉 Feliz aniversário Karols!!!! 🥳🥳🎉🎉🎉</h2>
 
 <div id="countdown"></div>
 <div class="hearts"></div>
 
 <audio id="music" autoplay loop>
-  <source src="aniversario.mp3" type="audio/mpeg">
+  <source src="baby.mp3" type="audio/mpeg">
 </audio>
 <button id="musicButton" onclick="toggleMusic()">🎵 Pausar/Reproduzir Música</button>
 
 <script>
   const heartsContainer = document.querySelector('.hearts');
-
-  function createHeart() {
+  function createHeart(){
     const heart = document.createElement('div');
     heart.classList.add('heart');
-    heart.style.left = Math.random() * 100 + 'vw';
-    heart.style.setProperty('--randX', Math.random());
-    heart.style.animationDuration = (3 + Math.random() * 2) + 's';
-    heart.style.width = heart.style.height = (10 + Math.random() * 20) + 'px';
+    heart.style.left = Math.random()*100+'vw';
+    heart.style.setProperty('--randX',Math.random());
+    heart.style.animationDuration=(3+Math.random()*2)+'s';
+    heart.style.width=heart.style.height=(10+Math.random()*20)+'px';
     heartsContainer.appendChild(heart);
-    setTimeout(() => heart.remove(), 5000);
+    setTimeout(()=>heart.remove(),5000);
   }
+  setInterval(createHeart,300);
 
-  setInterval(createHeart, 300);
-
-  // Contagem regressiva
   const countdownEl = document.getElementById('countdown');
-  const birthday = new Date("2025-12-25T00:00:00"); // Troque para a data real
-
-  function updateCountdown() {
+  const birthday = new Date("2025-12-25T00:00:00"); // ajuste para a data correta
+  function updateCountdown(){
     const now = new Date();
     const diff = birthday - now;
-    if (diff <= 0) {
-      countdownEl.innerHTML = "🎂 É HOJE O ANIVERSÁRIO! 🎂";
+    if(diff <= 0){
+      countdownEl.innerHTML="🎂 É HOJE O ANIVERSÁRIO! 🎂";
     } else {
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
-      countdownEl.innerHTML = `Faltam ${days} dias ${hours}h ${minutes}m ${seconds}s para o aniversário!`;
+      const days = Math.floor(diff/(1000*60*60*24));
+      const hours = Math.floor((diff/(1000*60*60))%24);
+      const minutes = Math.floor((diff/(1000*60))%60);
+      const seconds = Math.floor((diff/1000)%60);
+      countdownEl.innerHTML=`Faltam ${days} dias ${hours}h ${minutes}m ${seconds}s para o aniversário!`;
     }
   }
-
-  setInterval(updateCountdown, 1000);
+  setInterval(updateCountdown,1000);
   updateCountdown();
 
-  // Botão para pausar/reproduzir música
   const music = document.getElementById('music');
-  function toggleMusic() {
-    if (music.paused) music.play();
-    else music.pause();
-  }
+  function toggleMusic(){ if(music.paused) music.play(); else music.pause(); }
 </script>
 
 </body>
