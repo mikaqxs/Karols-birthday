@@ -10,39 +10,50 @@ html, body {
   margin: 0;
   background: #000;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  color: #fff;
+  color: #9b59b6;
   overflow: hidden;
+  text-align: center;
 }
 canvas { display: block; width:100vw; height:100vh; }
 
+.messageButton{
+  margin-top:15px; padding:10px 20px; font-size:1em;
+  background-color:#9b59b6; color:white; border:none; border-radius:8px;
+  cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);
+}
+#birthdayButton{display:none;}
+h3{margin:15px; max-width:90vw; line-height:1.4em;}
+
+/* Partículas do fundo */
 .star, .heart {
   position: absolute;
   opacity: 0.8;
   animation: float linear infinite, blink 2s infinite;
 }
-
 .star { width: 4px; height: 4px; background: #9b59b6; border-radius: 50%; }
 .heart { width: 12px; height: 12px; background: #9b59b6; transform: rotate(-45deg); }
-.heart::before, .heart::after {
-  content: "";
-  position: absolute;
-  width: 12px; height: 12px;
-  background: #9b59b6;
-  border-radius: 50%;
-}
-.heart::before { top: -6px; left: 0; }
-.heart::after { top: 0; left: 6px; }
+.heart::before, .heart::after { content:""; position:absolute; width:12px;height:12px; background:#9b59b6; border-radius:50%; }
+.heart::before{top:-6px; left:0;} .heart::after{top:0; left:6px;}
+@keyframes float { 0%{transform:translateY(0);}50%{transform:translateY(-10px);}100%{transform:translateY(0);} }
+@keyframes blink {0%,50%,100%{opacity:0.8;}25%,75%{opacity:0.3;}}
 
-@keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0); } }
-@keyframes blink { 0%,50%,100%{opacity:0.8;} 25%,75%{opacity:0.3;} }
 </style>
 </head>
 <body>
 
+<h1>Karols, passei horas fazendo isso pra você. Espero que goste!! 💜✨🥳</h1>
+<div id="countdown"></div>
+
+<button id="messageClick" class="messageButton">Clique aqui para ver a mensagem!</button>
+<h3 id="messageDisplay"></h3>
+
+<button id="birthdayButton" class="messageButton">Clique aqui para a surpresa final!</button>
+<h3 id="birthdayMessage" style="display:none;"></h3>
+
 <canvas id="canvas" aria-label="Coração animado com texto 'Feliz aniversário, Karols!'"></canvas>
 
 <script>
-// ======== Corações e estrelas flutuantes ========
+// ======== Partículas de fundo ========
 function createParticles(num, type) {
   for (let i=0;i<num;i++){
     const el = document.createElement('div');
@@ -58,7 +69,43 @@ function createParticles(num, type) {
 createParticles(40,'star');
 createParticles(20,'heart');
 
-// ======== Coração com texto no canvas ========
+// ======== Contador para desbloquear botão ========
+const countdownEl=document.getElementById('countdown');
+const birthday=new Date(); birthday.setFullYear(2025,10,29); birthday.setHours(0,0,0,0);
+function updateCountdown(){
+  const now=new Date(); const diff=birthday-now;
+  if(diff<=0){countdownEl.innerHTML="🎂 É HOJE O ANIVERSÁRIO! 🎂"; document.getElementById('messageClick').style.display='block';}
+  else{
+    const days=Math.floor(diff/(1000*60*60*24));
+    const hours=Math.floor((diff/(1000*60*60))%24);
+    const minutes=Math.floor((diff/(1000*60))%60);
+    const seconds=Math.floor((diff/1000)%60);
+    countdownEl.innerHTML=`Faltam ${days} dias ${hours}h ${minutes}m ${seconds}s para o aniversário!`;
+  }
+}
+setInterval(updateCountdown,1000); updateCountdown();
+
+// ======== Mensagens interativas ========
+const messages=[
+  "Karols, hoje é seu dia! 🥳🎉",
+  "Espero que goste do que fiz pra voce!🤟🏼",
+  "É simples mas fiz de coração! 😝",
+  "Você é especial pra mim! 💜",
+  "Adoro sua companhia! 💜",
+  "Feliz aniversário Karolayne Porto Romao! 🎉🎉"
+];
+let index=0;
+const messageDisplay=document.getElementById('messageDisplay');
+const messageClick=document.getElementById('messageClick');
+const birthdayButton=document.getElementById('birthdayButton');
+const birthdayMessage=document.getElementById('birthdayMessage');
+
+messageClick.onclick=function(){
+  if(index<messages.length){messageDisplay.innerHTML=messages[index]; index++;}
+  if(index===messages.length){birthdayButton.style.display='block'; messageClick.style.display='none';}
+}
+
+// ======== Canvas com coração final ========
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -73,73 +120,46 @@ function resize() {
 window.addEventListener('resize', resize, {passive:true});
 resize();
 
-const text = 'Feliz aniversário, Karols! ';
+const text = "Não sei por onde começar mas saiba que você é importante pra mim. Sua amizade trouxe cor pra minha vida, adoro ter vc por perto. Vou aproveitar que hoje é seu aniversário e te desejar tudo de bom e colocar aquelas frases clichês de texto de aniversário que é “feliz aniversário karols, que essa data se repita por muitos anos! Você eh tudo de bom!!! Te desejo muitas coisas boas que essa vida tem a oferecer e que um dia vc se case com o Namjoon do BTS 🤣🤣🎉🥳💜✨";
 const POINTS = 200;
 const pts = [];
+function heart(t){ const x = 16*Math.pow(Math.sin(t),3); const y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t)); return [x,y]; }
+for(let i=0;i<POINTS;i++){ const t=(i/POINTS)*Math.PI*2; const [x,y]=heart(t); pts.push({x,y,t}); }
 
-function heart(t) {
-  const x = 16 * Math.pow(Math.sin(t),3);
-  const y = -(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
-  return [x,y];
-}
-
-for (let i=0;i<POINTS;i++){
-  const t = (i/POINTS)*Math.PI*2;
-  const [x,y] = heart(t);
-  pts.push({x,y,t});
-}
-
-function draw(now){
+function drawHeart(now){
   const w = window.innerWidth, h = window.innerHeight;
   ctx.clearRect(0,0,w,h);
-  const scale = Math.min(w,h)/50;
-  const cx = w/2, cy = h/2.2;
-  const time = now/1000;
-  const rotate = Math.sin(time*0.7)*0.08;
-  const offsetRadius = Math.sin(time*1.2)*3;
+  const scale = Math.min(w,h)/50; const cx=w/2, cy=h/2.2;
+  const time = now/1000; const rotate=Math.sin(time*0.7)*0.08;
+  const offsetRadius=Math.sin(time*1.2)*3;
+  ctx.save(); ctx.translate(cx,cy); ctx.rotate(rotate);
 
-  ctx.save();
-  ctx.translate(cx,cy);
-  ctx.rotate(rotate);
-
-  for (let i=0;i<pts.length;i++){
-    const p = pts[i];
-    const px = p.x*scale;
-    const py = p.y*scale;
-    const nx = px + (p.x/Math.hypot(p.x,p.y))*offsetRadius;
-    const ny = py + (p.y/Math.hypot(p.x,p.y))*offsetRadius;
-    const angle = Math.atan2(ny,nx)+Math.PI/2+Math.sin(time+i*0.02)*0.15;
-
-    ctx.save();
-    ctx.translate(nx,ny);
-    ctx.rotate(angle);
+  for(let i=0;i<pts.length;i++){
+    const p=pts[i]; const px=p.x*scale; const py=p.y*scale;
+    const nx=px+(p.x/Math.hypot(p.x,p.y))*offsetRadius; const ny=py+(p.y/Math.hypot(p.x,p.y))*offsetRadius;
+    const angle=Math.atan2(ny,nx)+Math.PI/2+Math.sin(time+i*0.02)*0.15;
+    ctx.save(); ctx.translate(nx,ny); ctx.rotate(angle);
     const fontSize = Math.max(10, Math.min(20, Math.floor(Math.min(w,h)*0.018)));
     ctx.font = `bold ${fontSize}px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial`;
     ctx.fillStyle = '#ff98c2';
-    ctx.shadowColor='rgba(255,200,240,0.9)';
-    ctx.shadowBlur=8;
-    const ch = text[i % text.length];
-    ctx.textBaseline='middle';
-    ctx.fillText(ch,0,0);
-    ctx.restore();
+    ctx.shadowColor='rgba(255,200,240,0.9)'; ctx.shadowBlur=8;
+    const ch = text[i % text.length]; ctx.textBaseline='middle';
+    ctx.fillText(ch,0,0); ctx.restore();
   }
-
   ctx.restore();
-
   const innerR = Math.min(w,h)*0.14;
   ctx.save(); ctx.globalCompositeOperation='destination-out';
   ctx.beginPath(); ctx.arc(cx,cy,innerR,0,Math.PI*2); ctx.fill(); ctx.restore();
-
-  ctx.save();
-  ctx.beginPath(); ctx.arc(cx,cy,innerR+2,0,Math.PI*2);
-  ctx.strokeStyle='rgba(255,150,200,0.06)';
-  ctx.lineWidth=Math.min(w,h)*0.02;
-  ctx.stroke();
-  ctx.restore();
-
-  requestAnimationFrame(draw);
+  ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,innerR+2,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,150,200,0.06)'; ctx.lineWidth=Math.min(w,h)*0.02; ctx.stroke(); ctx.restore();
+  requestAnimationFrame(drawHeart);
 }
-requestAnimationFrame(draw);
+
+birthdayButton.onclick=function(){
+  birthdayMessage.style.display='block';
+  birthdayMessage.innerHTML = text;
+  requestAnimationFrame(drawHeart);
+}
 </script>
 </body>
 </html>
