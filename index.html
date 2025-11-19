@@ -11,7 +11,7 @@ body {
   background-color:#000;
   color:#9b59b6;
   display:flex; flex-direction:column; align-items:center; text-align:center;
-  overflow-x:hidden;
+  overflow:hidden;
   min-height:100vh;
 }
 h1,h2,h3 {
@@ -32,30 +32,29 @@ h3{ font-size:1.1em; line-height:1.4em; margin-top:20px; }
 }
 #birthdayButton{display:none;}
 
-.hearts{position:absolute;width:100%;height:100%;pointer-events:none;overflow:hidden;}
+canvas{display:block;margin-top:20px;}
+.blinking{animation:blink 1s infinite;}
+@keyframes blink{0%,50%,100%{opacity:1;}25%,75%{opacity:0.3;}}
 
-.heart{
+.star{
   position:absolute;
-  width:10px; height:10px;
   background:#9b59b6;
   border-radius:50%;
   opacity:0.8;
-  animation:floatStar linear infinite, blink 2s infinite;
+  animation:floatStar linear infinite, blinkStar 2s infinite;
 }
 
 @keyframes floatStar {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
-  100% { transform: translateY(0px); }
+  0%{transform:translateY(0);}
+  50%{transform:translateY(-10px);}
+  100%{transform:translateY(0);}
 }
 
-@keyframes blink {
-  0%, 50%, 100% { opacity:0.8; }
-  25%, 75% { opacity:0.3; }
+@keyframes blinkStar {
+  0%,50%,100%{opacity:0.8;}
+  25%,75%{opacity:0.3;}
 }
 
-canvas{display:block;margin-top:20px;}
-.blinking{animation:blink 1s infinite;}
 @media(max-width:400px){
   h1{font-size:1.6em;}
   h2{font-size:1.1em;}
@@ -70,7 +69,6 @@ canvas{display:block;margin-top:20px;}
 <h2>Você é especial pra mim! 💜 É simples mas é de coração!!! 🥳🎊🎉 Feliz aniversário Karols!!!! 🥳🥳🎉🎉🎉</h2>
 
 <div id="countdown"></div>
-<div class="hearts"></div>
 
 <button id="messageClick" class="messageButton">Clique aqui para ver a mensagem!</button>
 <h3 id="messageDisplay"></h3>
@@ -82,19 +80,19 @@ canvas{display:block;margin-top:20px;}
 
 <script>
 window.onload=function(){
-  const heartsContainer=document.querySelector('.hearts');
-  function createHeart(){
-    const heart=document.createElement('div');
-    heart.classList.add('heart');
-    heart.style.left=Math.random()*100+'vw';
-    heart.style.top=Math.random()*100+'vh';
-    const size=5 + Math.random()*10;
-    heart.style.width=heart.style.height=size+'px';
-    heart.style.animationDuration=(2 + Math.random()*3)+'s';
-    heartsContainer.appendChild(heart);
-    setTimeout(()=>heart.remove(),7000);
+  // Criar estrelas ao redor da tela
+  const numberOfStars = 60; // Ajuste a quantidade de "corações/estrelas"
+  for(let i=0;i<numberOfStars;i++){
+    const star = document.createElement('div');
+    star.classList.add('star');
+    const size = Math.random()*6+3;
+    star.style.width=size+'px';
+    star.style.height=size+'px';
+    star.style.left=Math.random()*window.innerWidth+'px';
+    star.style.top=Math.random()*window.innerHeight+'px';
+    star.style.animationDuration=(2+Math.random()*3)+'s';
+    document.body.appendChild(star);
   }
-  setInterval(createHeart,200);
 
   const countdownEl=document.getElementById('countdown');
   const birthday=new Date(); birthday.setFullYear(2025,10,29); birthday.setHours(23,59,59,999);
